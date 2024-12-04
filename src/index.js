@@ -1,7 +1,7 @@
 // src/index.js
 const http = require('http');
 const url = require('url');
-const { addNumbers, subtractNumbers } = require('./math');
+const { addNumbers, subtractNumbers, multiplyNumbers, divideNumbers } = require('./math');
 const promClient = require('prom-client');
 
 // Create a Registry to store metrics
@@ -175,8 +175,88 @@ const server = http.createServer(async (req, res) => {
       endTimer(500);
     }
   } 
+
+  if (pathname === '/mul' && req.method === 'GET') {
+    console.log('/mul endpoint called.');
+    ({ num1, num2 } = query);
+    
+    if (!num1 || !num2) {
+      res.writeHead(400, { 'Content-Type': 'text/plain' });
+      res.end('Please provide two numbers as query parameters: num1 and num2');
+      calculationErrors.labels('missing_parameters').inc();
+      endTimer(400);
+      console.error('bad query parameters at /add endpoint');
+      return;
+    }
+
+    parsedNum1 = parseFloat(num1);
+    parsedNum2 = parseFloat(num2);
+
+    if (isNaN(parsedNum1) || isNaN(parsedNum2)) {
+      res.writeHead(400, { 'Content-Type': 'text/plain' });
+      res.end('Both query parameters must be valid numbers.');
+      calculationErrors.labels('invalid_number').inc();
+      endTimer(400);
+      console.error('no valid numbers at /add endpoint');
+      return;
+    }
+
+    try {
+      resolution = multiplyNumbers(parsedNum1, parsedNum2);
+      calculationTotal.inc();
+      res.writeHead(200, { 'Content-Type': 'text/plain' });
+      res.end(`The product of ${parsedNum1} and ${parsedNum2} is ${resolution}`);
+      endTimer(200);
+      console.log(`The product of ${parsedNum1} and ${parsedNum2} is ${resolution}`);
+    } catch (error) {
+      calculationErrors.labels('calculation_error').inc();
+      res.writeHead(500, { 'Content-Type': 'text/plain' });
+      res.end('An error occurred while processing your request.');
+      endTimer(500);
+    }
+  } 
+
+  if (pathname === '/div' && req.method === 'GET') {
+    console.log('/div endpoint called.');
+    ({ num1, num2 } = query);
+    
+    if (!num1 || !num2) {
+      res.writeHead(400, { 'Content-Type': 'text/plain' });
+      res.end('Please provide two numbers as query parameters: num1 and num2');
+      calculationErrors.labels('missing_parameters').inc();
+      endTimer(400);
+      console.error('bad query parameters at /add endpoint');
+      return;
+    }
+
+    parsedNum1 = parseFloat(num1);
+    parsedNum2 = parseFloat(num2);
+
+    if (isNaN(parsedNum1) || isNaN(parsedNum2)) {
+      res.writeHead(400, { 'Content-Type': 'text/plain' });
+      res.end('Both query parameters must be valid numbers.');
+      calculationErrors.labels('invalid_number').inc();
+      endTimer(400);
+      console.error('no valid numbers at /add endpoint');
+      return;
+    }
+
+    try {
+      resolution = divideNumbers(parsedNum1, parsedNum2);
+      calculationTotal.inc();
+      res.writeHead(200, { 'Content-Type': 'text/plain' });
+      res.end(`The quotient of ${parsedNum1} and ${parsedNum2} is ${resolution}`);
+      endTimer(200);
+      console.log(`The quotient of ${parsedNum1} and ${parsedNum2} is ${resolution}`);
+    } catch (error) {
+      calculationErrors.labels('calculation_error').inc();
+      res.writeHead(500, { 'Content-Type': 'text/plain' });
+      res.end('An error occurred while processing your request.');
+      endTimer(500);
+    }
+  } 
   
-  if (pathname !== '/metrics' && pathname !== '/add' && pathname !== '/sub') {
+  if (pathname !== '/metrics' && pathname !== '/add' && pathname !== '/sub' && pathname !== '/mul' && pathname !== '/div') {
     res.writeHead(404, { 'Content-Type': 'text/plain' });
     res.end('Not Found');
     endTimer(404);
