@@ -146,7 +146,7 @@ const server = http.createServer(async (req, res) => {
       res.end('Please provide two numbers as query parameters: num1 and num2');
       calculationErrors.labels('missing_parameters').inc();
       endTimer(400);
-      console.error('bad query parameters at /add endpoint');
+      console.error('bad query parameters at /sub endpoint');
       return;
     }
 
@@ -158,7 +158,7 @@ const server = http.createServer(async (req, res) => {
       res.end('Both query parameters must be valid numbers.');
       calculationErrors.labels('invalid_number').inc();
       endTimer(400);
-      console.error('no valid numbers at /add endpoint');
+      console.error('no valid numbers at /sub endpoint');
       return;
     }
 
@@ -186,7 +186,7 @@ const server = http.createServer(async (req, res) => {
       res.end('Please provide two numbers as query parameters: num1 and num2');
       calculationErrors.labels('missing_parameters').inc();
       endTimer(400);
-      console.error('bad query parameters at /add endpoint');
+      console.error('bad query parameters at /mul endpoint');
       return;
     }
 
@@ -198,7 +198,7 @@ const server = http.createServer(async (req, res) => {
       res.end('Both query parameters must be valid numbers.');
       calculationErrors.labels('invalid_number').inc();
       endTimer(400);
-      console.error('no valid numbers at /add endpoint');
+      console.error('no valid numbers at /mul endpoint');
       return;
     }
 
@@ -226,7 +226,7 @@ const server = http.createServer(async (req, res) => {
       res.end('Please provide two numbers as query parameters: num1 and num2');
       calculationErrors.labels('missing_parameters').inc();
       endTimer(400);
-      console.error('bad query parameters at /add endpoint');
+      console.error('bad query parameters at /div endpoint');
       return;
     }
 
@@ -238,7 +238,7 @@ const server = http.createServer(async (req, res) => {
       res.end('Both query parameters must be valid numbers.');
       calculationErrors.labels('invalid_number').inc();
       endTimer(400);
-      console.error('no valid numbers at /add endpoint');
+      console.error('no valid numbers at /div endpoint');
       return;
     }
 
