@@ -160,10 +160,10 @@ describe('HTTP Server', () => {
     expect(response.data).toBe('The quotient of -6 and 3 is -2');
   });
 
-  test('should return 400 for division by zero', async () => {
+  test('should return 500 for division by zero', async () => {
     const response = await makeRequest('/div?num1=6&num2=0');
-    expect(response.statusCode).toBe(400);
-    expect(response.data).toBe('An error occurred while processing your request.');
+    expect(response.statusCode).toBe(500);
+    expect(response.data).toBe('Division by zero is not allowed');
   });
 
   // Test for missing parameters and invalid inputs
