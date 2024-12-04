@@ -129,7 +129,49 @@ const server = http.createServer(async (req, res) => {
       res.end('An error occurred while processing your request.');
       endTimer(500);
     }
-  } else if (pathname !== '/metrics') {
+  } 
+  
+  if (pathname === '/sub' && req.method === 'GET') {
+    console.log('/sub endpoint called.');
+    const { num1, num2 } = query;
+    
+    if (!num1 || !num2) {
+      res.writeHead(400, { 'Content-Type': 'text/plain' });
+      res.end('Please provide two numbers as query parameters: num1 and num2');
+      calculationErrors.labels('missing_parameters').inc();
+      endTimer(400);
+      console.error('bad query parameters at /add endpoint');
+      return;
+    }
+
+    const parsedNum1 = parseFloat(num1);
+    const parsedNum2 = parseFloat(num2);
+
+    if (isNaN(parsedNum1) || isNaN(parsedNum2)) {
+      res.writeHead(400, { 'Content-Type': 'text/plain' });
+      res.end('Both query parameters must be valid numbers.');
+      calculationErrors.labels('invalid_number').inc();
+      endTimer(400);
+      console.error('no valid numbers at /add endpoint');
+      return;
+    }
+
+    try {
+      const sum = subtractNumbers(parsedNum1, parsedNum2);
+      calculationTotal.inc();
+      res.writeHead(200, { 'Content-Type': 'text/plain' });
+      res.end(`The difference of ${parsedNum1} and ${parsedNum2} is ${sum}`);
+      endTimer(200);
+      console.log(`The difference of ${parsedNum1} and ${parsedNum2} is ${sum}`);
+    } catch (error) {
+      calculationErrors.labels('calculation_error').inc();
+      res.writeHead(500, { 'Content-Type': 'text/plain' });
+      res.end('An error occurred while processing your request.');
+      endTimer(500);
+    }
+  } 
+  
+  if (pathname !== '/metrics' || '/add' || '/sub') {
     res.writeHead(404, { 'Content-Type': 'text/plain' });
     res.end('Not Found');
     endTimer(404);
