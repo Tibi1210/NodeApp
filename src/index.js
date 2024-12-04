@@ -1,7 +1,7 @@
 // src/index.js
 const http = require('http');
 const url = require('url');
-const { addNumbers } = require('./math');
+const { addNumbers, subtractNumbers } = require('./math');
 const promClient = require('prom-client');
 
 // Create a Registry to store metrics
