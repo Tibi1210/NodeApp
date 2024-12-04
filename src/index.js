@@ -71,6 +71,11 @@ const server = http.createServer(async (req, res) => {
 
   const { pathname, query } = url.parse(req.url, true);
 
+  var { num1, num2} = {};
+  var parsedNum1;
+  var parsedNum2;
+  var resolution;
+
   // Add metrics endpoint
   if (pathname === '/metrics' && req.method === 'GET') {
     console.log('/metrics endpoint called.');
@@ -93,7 +98,7 @@ const server = http.createServer(async (req, res) => {
 
   if (pathname === '/add' && req.method === 'GET') {
     console.log('/add endpoint called.');
-    var { num1, num2 } = query;
+    ({ num1, num2 } = query);
     
     if (!num1 || !num2) {
       res.writeHead(400, { 'Content-Type': 'text/plain' });
@@ -104,8 +109,8 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
-    var parsedNum1 = parseFloat(num1);
-    var parsedNum2 = parseFloat(num2);
+    parsedNum1 = parseFloat(num1);
+    parsedNum2 = parseFloat(num2);
 
     if (isNaN(parsedNum1) || isNaN(parsedNum2)) {
       res.writeHead(400, { 'Content-Type': 'text/plain' });
@@ -117,7 +122,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     try {
-      var sum = addNumbers(parsedNum1, parsedNum2);
+      resolution = addNumbers(parsedNum1, parsedNum2);
       calculationTotal.inc();
       res.writeHead(200, { 'Content-Type': 'text/plain' });
       res.end(`The sum of ${parsedNum1} and ${parsedNum2} is ${sum}`);
@@ -133,7 +138,7 @@ const server = http.createServer(async (req, res) => {
   
   if (pathname === '/sub' && req.method === 'GET') {
     console.log('/sub endpoint called.');
-    var { num1, num2 } = query;
+    ({ num1, num2 } = query);
     
     if (!num1 || !num2) {
       res.writeHead(400, { 'Content-Type': 'text/plain' });
@@ -144,8 +149,8 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
-    var parsedNum1 = parseFloat(num1);
-    var parsedNum2 = parseFloat(num2);
+    parsedNum1 = parseFloat(num1);
+    parsedNum2 = parseFloat(num2);
 
     if (isNaN(parsedNum1) || isNaN(parsedNum2)) {
       res.writeHead(400, { 'Content-Type': 'text/plain' });
@@ -157,7 +162,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     try {
-      var sum = subtractNumbers(parsedNum1, parsedNum2);
+      resolution = subtractNumbers(parsedNum1, parsedNum2);
       calculationTotal.inc();
       res.writeHead(200, { 'Content-Type': 'text/plain' });
       res.end(`The difference of ${parsedNum1} and ${parsedNum2} is ${sum}`);
