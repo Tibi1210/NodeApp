@@ -163,7 +163,7 @@ describe('HTTP Server', () => {
   test('should return 500 for division by zero', async () => {
     const response = await makeRequest('/div?num1=6&num2=0');
     expect(response.statusCode).toBe(500);
-    expect(response.data).toBe('Division by zero is not allowed');
+    expect(response.data).toBe('An error occurred while processing your request.');
   });
 
   // Test for missing parameters and invalid inputs
