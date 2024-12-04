@@ -176,7 +176,7 @@ const server = http.createServer(async (req, res) => {
     }
   } 
   
-  if (pathname !== '/metrics' || '/add' || '/sub') {
+  if (pathname !== '/metrics' && pathname !== '/add' && pathname !== '/sub') {
     res.writeHead(404, { 'Content-Type': 'text/plain' });
     res.end('Not Found');
     endTimer(404);
