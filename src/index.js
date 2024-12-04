@@ -125,9 +125,9 @@ const server = http.createServer(async (req, res) => {
       resolution = addNumbers(parsedNum1, parsedNum2);
       calculationTotal.inc();
       res.writeHead(200, { 'Content-Type': 'text/plain' });
-      res.end(`The sum of ${parsedNum1} and ${parsedNum2} is ${sum}`);
+      res.end(`The sum of ${parsedNum1} and ${parsedNum2} is ${resolution}`);
       endTimer(200);
-      console.log(`The sum of ${parsedNum1} and ${parsedNum2} is ${sum}`);
+      console.log(`The sum of ${parsedNum1} and ${parsedNum2} is ${resolution}`);
     } catch (error) {
       calculationErrors.labels('calculation_error').inc();
       res.writeHead(500, { 'Content-Type': 'text/plain' });
@@ -165,9 +165,9 @@ const server = http.createServer(async (req, res) => {
       resolution = subtractNumbers(parsedNum1, parsedNum2);
       calculationTotal.inc();
       res.writeHead(200, { 'Content-Type': 'text/plain' });
-      res.end(`The difference of ${parsedNum1} and ${parsedNum2} is ${sum}`);
+      res.end(`The difference of ${parsedNum1} and ${parsedNum2} is ${resolution}`);
       endTimer(200);
-      console.log(`The difference of ${parsedNum1} and ${parsedNum2} is ${sum}`);
+      console.log(`The difference of ${parsedNum1} and ${parsedNum2} is ${resolution}`);
     } catch (error) {
       calculationErrors.labels('calculation_error').inc();
       res.writeHead(500, { 'Content-Type': 'text/plain' });
