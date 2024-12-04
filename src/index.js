@@ -70,6 +70,7 @@ const server = http.createServer(async (req, res) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
 
   const { pathname, query } = url.parse(req.url, true);
+  console.log(`Requested path: ${pathname}`);
 
   var { num1, num2} = {};
   var parsedNum1;
