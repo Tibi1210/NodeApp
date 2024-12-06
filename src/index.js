@@ -152,6 +152,7 @@ const server = http.createServer(async (req, res) => {
       res.writeHead(500, { 'Content-Type': 'text/plain' });
       res.end('An error occurred while processing your request.');
       endTimer(500);
+      console.error('An error occurred while processing your request.');
     }
   } 
   
@@ -195,6 +196,7 @@ const server = http.createServer(async (req, res) => {
       calculationErrors.labels('calculation_error').inc();
       res.writeHead(500, { 'Content-Type': 'text/plain' });
       res.end('An error occurred while processing your request.');
+      console.error('An error occurred while processing your request.');
       endTimer(500);
     }
   } 
@@ -240,6 +242,7 @@ const server = http.createServer(async (req, res) => {
       res.writeHead(500, { 'Content-Type': 'text/plain' });
       res.end('An error occurred while processing your request.');
       endTimer(500);
+      console.error('An error occurred while processing your request.');
     }
   } 
 
@@ -284,6 +287,7 @@ const server = http.createServer(async (req, res) => {
       res.writeHead(500, { 'Content-Type': 'text/plain' });
       res.end('An error occurred while processing your request.');
       endTimer(500);
+      console.error('An error occurred while processing your request.');
     }
   } 
   
