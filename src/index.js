@@ -13,7 +13,6 @@ promClient.collectDefaultMetrics({
   prefix: 'mathapp_'
 });
 
-// Create custom metrics
 const httpRequestDuration = new promClient.Histogram({
   name: 'http_request_duration_seconds',
   help: 'Duration of HTTP requests in seconds',
@@ -42,16 +41,20 @@ const calculationDuration = new promClient.Histogram({
   name: 'calculation_duration_seconds',
   help: 'Duration of calculation operations in seconds',
   labelNames: ['operation'],
-  buckets: [0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 1] // Customize these based on expected latencies
+  buckets: [0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 1]
 });
 
-// Register custom metrics
+const concurrentRequests = new promClient.Gauge({
+  name: 'http_concurrent_requests',
+  help: 'Number of concurrent HTTP requests'
+});
+
 register.registerMetric(httpRequestDuration);
 register.registerMetric(httpRequestTotal);
 register.registerMetric(calculationErrors);
 register.registerMetric(calculationTotal);
 register.registerMetric(calculationDuration);
-
+register.registerMetric(concurrentRequests);
 
 const PORT = process.env.PORT || 3000;
 
@@ -296,6 +299,13 @@ const server = http.createServer(async (req, res) => {
 process.on('uncaughtException', (err) => {
   console.error('Uncaught exception:', err);
   process.exit(1);
+});
+
+server.on('request', (req, res) => {
+  concurrentRequests.inc();
+  res.on('finish', () => {
+    concurrentRequests.dec();
+  });
 });
 
 function createServer() {
