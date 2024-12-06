@@ -38,11 +38,19 @@ const calculationTotal = new promClient.Counter({
   help: 'Total number of calculations performed',
 });
 
+const calculationDuration = new promClient.Histogram({
+  name: 'calculation_duration_seconds',
+  help: 'Duration of calculation operations in seconds',
+  labelNames: ['operation'],
+  buckets: [0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 1] // Customize these based on expected latencies
+});
+
 // Register custom metrics
 register.registerMetric(httpRequestDuration);
 register.registerMetric(httpRequestTotal);
 register.registerMetric(calculationErrors);
 register.registerMetric(calculationTotal);
+register.registerMetric(calculationDuration);
 
 
 const PORT = process.env.PORT || 3000;
@@ -76,6 +84,9 @@ const server = http.createServer(async (req, res) => {
   var parsedNum1;
   var parsedNum2;
   var resolution;
+  var startCalculation;
+  var [calcSeconds, calcNanoseconds] = [];
+  var calcDuration;
 
   // Add metrics endpoint
   if (pathname === '/metrics' && req.method === 'GET') {
@@ -122,8 +133,12 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
+    startCalculation = process.hrtime();
     try {
       resolution = addNumbers(parsedNum1, parsedNum2);
+      [calcSeconds, calcNanoseconds] = process.hrtime(startCalculation);
+      calcDuration = calcSeconds + calcNanoseconds / 1e9;
+      calculationDuration.labels('add').observe(calcDuration);
       calculationTotal.inc();
       res.writeHead(200, { 'Content-Type': 'text/plain' });
       res.end(`The sum of ${parsedNum1} and ${parsedNum2} is ${resolution}`);
@@ -162,8 +177,12 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
+    startCalculation = process.hrtime();
     try {
       resolution = subtractNumbers(parsedNum1, parsedNum2);
+      [calcSeconds, calcNanoseconds] = process.hrtime(startCalculation);
+      calcDuration = calcSeconds + calcNanoseconds / 1e9;
+      calculationDuration.labels('sub').observe(calcDuration);
       calculationTotal.inc();
       res.writeHead(200, { 'Content-Type': 'text/plain' });
       res.end(`The difference of ${parsedNum1} and ${parsedNum2} is ${resolution}`);
@@ -202,8 +221,12 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
+    startCalculation = process.hrtime();
     try {
       resolution = multiplyNumbers(parsedNum1, parsedNum2);
+      [calcSeconds, calcNanoseconds] = process.hrtime(startCalculation);
+      calcDuration = calcSeconds + calcNanoseconds / 1e9;
+      calculationDuration.labels('mul').observe(calcDuration);
       calculationTotal.inc();
       res.writeHead(200, { 'Content-Type': 'text/plain' });
       res.end(`The product of ${parsedNum1} and ${parsedNum2} is ${resolution}`);
@@ -242,8 +265,12 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
+    startCalculation = process.hrtime();
     try {
       resolution = divideNumbers(parsedNum1, parsedNum2);
+      [calcSeconds, calcNanoseconds] = process.hrtime(startCalculation);
+      calcDuration = calcSeconds + calcNanoseconds / 1e9;
+      calculationDuration.labels('div').observe(calcDuration);
       calculationTotal.inc();
       res.writeHead(200, { 'Content-Type': 'text/plain' });
       res.end(`The quotient of ${parsedNum1} and ${parsedNum2} is ${resolution}`);
